@@ -197,8 +197,11 @@ class BaseNode:
         style_attrs = {}
 
         for k, v in self.attrs.items():
+            print(k, v)
             if k in HTML_ATTRIBUTE_KEYS:
                 html_attrs[k] = v
+            elif k in DUTCH_TRANSLATIONS:
+                html_attrs[DUTCH_TRANSLATIONS[k]] = v
             else:
                 # fallback: als key of value niet vertaald is, gebruik originele
                 css_key = STYLE_PROPERTY_MAP.get(k.lower(), k)
@@ -499,7 +502,63 @@ class TableCellNode(BaseNode):
         self.tag_name = "td"
         self.update_tags()
 
+@register_node("stijl")
+class StyleNode(BaseNode):
+    def __init__(self, content = None, attrs = None, parent = None):
+        super().__init__(content, attrs, parent)
+        self.tag_name = "link"
 
+        # Set default rel and type
+        self.attrs["rel"] = "stylesheet"
+        self.attrs["type"] = "text/css"
+
+        self.update_tags()
+        self.close = ""
+        # Zorg dat er een href attribuut is
+        if not self.attrs or "href" not in self.attrs:
+            raise ValueError("Stijlcodes vereisen een 'adres' attribuut!")
+
+    def render(self) -> str:
+        """
+        Render de style node met nette indentation op basis van self.depth en zonder self.close
+        """
+        space = "  " * self.depth  # 2 spaties per level
+        content = self.content or ""
+
+        # render children
+        children_html = "".join(child.render() for child in self.children)
+
+        # combineer opening tag, children en closing tag
+        if children_html:
+            return f"{space}{self.open}\n{children_html}\n"
+
+        return f"{space}{self.open}{content}\n"
+
+@register_node("code")
+class ScriptNode(BaseNode):
+    def __init__(self, content = None, attrs = None, parent = None):
+        super().__init__(content, attrs, parent)
+        self.tag_name = "script"
+        self.update_tags()
+        # Zorg dat er een src attribuut is
+        if not self.attrs or "src" not in self.attrs:
+            raise ValueError(f"scripts vereisen een 'bron' attribuut! {self.attrs}")
+
+    def render(self) -> str:
+        """
+        Render de script node met nette indentation op basis van self.depth en zonder self.close
+        """
+        space = "  " * self.depth  # 2 spaties per level
+        content = self.content or ""
+
+        # render children
+        children_html = "".join(child.render() for child in self.children)
+
+        # combineer opening tag, children en closing tag
+        if children_html:
+            return f"{space}{self.open}\n{children_html}{self.close}\n"
+
+        return f"{space}{self.open}{content}{self.close}\n"
 
 
 # -------- Factory --------
@@ -521,4 +580,3 @@ if __name__ == "__main__":
     li1 = create_node("lijst_item", content="Appel", parent=ul)
     li2 = create_node("lijst_item", content="Banaan", attrs={"color": "red"}, parent=ul)
     print(doc.render())
-
