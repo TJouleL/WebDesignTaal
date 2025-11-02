@@ -348,7 +348,7 @@ class ListItemNode(BaseNode):
         self.tag_name = "li"
         # Check if parent is ListNode or NumberedListNode
         if not (self.parent and isinstance(self.parent, (ListNode, NumberedListNode))):
-           raise ValueError("Een lijst item moet onderdeel zijn van een lijst.")
+            raise ValueError("Een lijst item moet onderdeel zijn van een lijst.")
         self.update_tags()
 
 @register_node("afbeelding")
