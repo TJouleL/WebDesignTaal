@@ -52,18 +52,19 @@ def main():
     """Entry point voor de command-line tool."""
     auto_update()
 
-    # Check for updates
-    if sys.argv[1] == "-u" or sys.argv[1] == "--update":
-        auto_update()
-        sys.exit(0)
+    if len(sys.argv) == 2:
+        # Check for updates
+        if sys.argv[1] == "-u" or sys.argv[1] == "--update":
+            auto_update()
+            sys.exit(0)
 
-    if sys.argv[1] == "-v" or sys.argv[1] == "--version":
-        print(get_local_version())
-        print("Gebruik wdt --update om te checken voor nieuwe updates en ze te installeren")
-        sys.exit(0)
+        if sys.argv[1] == "-v" or sys.argv[1] == "--version":
+            print(get_local_version())
+            print("Gebruik wdt --update om te checken voor nieuwe updates en ze te installeren")
+            sys.exit(0)
 
     if len(sys.argv) < 3 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
-        print("Gebruik: wdt <pad_naar_wdt_bestand> <naam_van_output_map>")
+        print("Gebruik: wdt <pad_naar_wdt_bestand> <naam_van_output_map>\nUpdate: wdt --update\nCheck versie: wdt --version")
         sys.exit(1)
 
     wdt_path = sys.argv[1]

@@ -23,24 +23,27 @@ def is_online(host="google.com", port=443, timeout=3):
         return False
 
 
-def get_local_version():
+def get_local_version(silent=False):
     "Check local version and return its contents."
     try:
         return version("WebDesignTaal")
     except PackageNotFoundError:
-        print("WebDesignTaal package kon niet gevonden worden. Is hij wel geïnstalleerd?")
+        if not silent:
+            print("WebDesignTaal package kon niet gevonden worden. Is hij wel geïnstalleerd?")
         return "0.0.0"
     except Exception as e:
-        print(f"Kon lokale version niet ophalen: {e}")
+        if not silent:
+            print(f"Kon lokale version niet ophalen: {e}")
         return "0.0.0"
 
-def get_remote_version():
+def get_remote_version(silent=False):
     "Open remote version file and return its contents."
     try:
         with urllib.request.urlopen(GITHUB_VERSION_URL) as response:
             return str(response.read().decode().strip())
     except Exception as e:
-        print(f"Kon remote version niet ophalen: {e}")
+        if not silent:
+            print(f"Kon remote version niet ophalen: {e}")
         return None
 
 def needs_update():
@@ -69,7 +72,7 @@ def auto_update():
     """Can be caled by other scripts to check for updates and update if needed."""
     if is_online():
         if needs_update():
-            print(f"Nieuwe versie beschikbaar! ({get_local_version()} -> {get_remote_version()})")
+            print(f"Nieuwe versie beschikbaar! ({get_local_version(silent=True)} -> {get_remote_version(silent=True)})")
             antwoord = input("Wil je updaten? (Y/n) : ")
             if antwoord.lower() == "y" or antwoord.lower() == "":
                 upgrade_package()
