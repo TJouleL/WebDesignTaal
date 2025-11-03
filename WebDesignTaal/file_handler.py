@@ -34,8 +34,12 @@ def file_conversion(wdt_file: str, output_dir: str = None):
         code = f.read()
 
     # 2. render HTML
-    html = render_code(code)
-
+    try:
+        html = render_code(code)
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
+ 
     # 3. maak output folder als die niet bestaat
     os.makedirs(output_dir, exist_ok=True)
 
@@ -44,8 +48,8 @@ def file_conversion(wdt_file: str, output_dir: str = None):
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(html)
 
-    print(f"Code gegenereerd in {output_file}. Gebruik je een style of code tag? \
-Vergeet dan niet om je .css en/of .js bestanden in dezelfde map te slepen.")
+    print(f"Code gegenereerd in {output_file}. \n\nGebruik je een 'stijl' of 'code' tag?\
+ Vergeet dan niet om je .css en/of .js bestanden in dezelfde map te slepen. ({output_dir})")
     return output_file
 
 def main():
