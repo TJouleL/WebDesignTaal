@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 # -------- Variabelen --------
 HTML_ATTRIBUTE_KEYS = [
     "id", "class", "href", "src", "alt", "title", "name", "value",
-    "type", "placeholder", "checked", "disabled", "readonly", 
+    "type", "placeholder", "checked", "disabled", "readonly", "style",
     "action", "method", "for", "rel", "target", "width", "height", 
     "cols", "rows", "maxlength", "min", "max", "step", "selected",
     "autocomplete", "download", "role", "lang", "tabindex", "aria-label"
@@ -197,10 +197,11 @@ class BaseNode:
         style_attrs = {}
 
         for k, v in self.attrs.items():
-            print(k, v)
+            # Als de attribute een html attribute is voeg hem dan toe
             if k in HTML_ATTRIBUTE_KEYS:
                 html_attrs[k] = v
-            elif k in DUTCH_TRANSLATIONS:
+            # Zo niet check of hij een nederlandse vertaling is van een html attribute.
+            elif k in DUTCH_TRANSLATIONS.keys():
                 html_attrs[DUTCH_TRANSLATIONS[k]] = v
             else:
                 # fallback: als key of value niet vertaald is, gebruik originele
@@ -212,7 +213,10 @@ class BaseNode:
             style_str = "; ".join(f"{k}:{v}" for k, v in style_attrs.items())
             html_attrs["style"] = style_str
 
-        attr_str = " ".join(f'{k}="{v}"' for k, v in html_attrs.items())
+        # na het combineren werk self.attrs bij voor latere attrs req checks
+        self.attrs = html_attrs
+
+        attr_str = " ".join(f'{k}="{v}"' for k, v in self.attrs.items())
         self.open = f"<{self.tag_name}{' ' if attr_str else ''}{attr_str}>"
         self.close = f"</{self.tag_name}>"
 
@@ -348,7 +352,7 @@ class ListItemNode(BaseNode):
         self.tag_name = "li"
         # Check if parent is ListNode or NumberedListNode
         if not (self.parent and isinstance(self.parent, (ListNode, NumberedListNode))):
-            raise ValueError("Een lijst item moet onderdeel zijn van een lijst.")
+           raise ValueError("Een lijst item moet onderdeel zijn van een lijst soort.")
         self.update_tags()
 
 @register_node("afbeelding")
@@ -574,9 +578,10 @@ def create_node(kind: str, **kwargs) -> BaseNode:
 # -------- Demo / Test --------
 if __name__ == "__main__":
     doc = create_node("document")
-    h1 = create_node("titel", content="Welkom!", parent=doc)
+    h1 = create_node("kop1", content="Welkom!", parent=doc)
     p = create_node("tekst", content="Dit is een paragraaf.", parent=doc)
-    ul = create_node("lijst", parent=doc)
+    ul = create_node("opsomming_lijst", parent=doc)
     li1 = create_node("lijst_item", content="Appel", parent=ul)
     li2 = create_node("lijst_item", content="Banaan", attrs={"color": "red"}, parent=ul)
+    nod1 = create_node("stijl", attrs={"adres": "stylesheet.css"}, parent=doc)
     print(doc.render())

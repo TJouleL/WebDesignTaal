@@ -209,4 +209,3 @@ def render_code(code: str) -> str:
         print("Error: ")
         return "\n".join(errors)
     return f"<!DOCTYPE html>\n<!-- WebDesignTaal (v{get_local_version()}) -->\n" + root.render()      # render alle nodes tot HTML
-
