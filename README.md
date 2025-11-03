@@ -649,7 +649,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 * **WDT Voorbeeld:**
 
   ```wdt
-  stijl href=stijl.css
+  stijl adres="stijl.css";
   ```
 * **HTML Output:**
 
@@ -664,7 +664,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 * **WDT Voorbeeld:**
 
   ```wdt
-  code src=script.js
+  code bron="script.js";
   ```
 
 * **HTML Output:**
