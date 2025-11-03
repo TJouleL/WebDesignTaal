@@ -51,7 +51,7 @@ WebDesignTaal gebruikt een eenvoudige, op indentatie gebaseerde syntax om de str
 *   **Tag Naam:** Elk element begint met de Nederlandse tag naam (bijv. `document`, `kop1`, `tekst`).
 *   **Content:** De tekstuele inhoud van een element volgt na een puntkomma (`;`). Als er geen content is, kan de puntkomma weggelaten worden, maar het is goede praktijk om deze te behouden voor consistentie.
 *   **Attributen:** Attributen worden na de tag naam geplaatst en voor de puntkomma, gescheiden door spaties. Attributen bestaan uit een sleutel-waarde paar (`sleutel=waarde`). Waarden die spaties bevatten, moeten tussen aanhalingstekens (`"` of `'`) staan. Voor waarden zonder spaties zijn aanhalingstekens optioneel.
-*   **Commentaar:** Je kunt commentaar toevoegen aan je code door een `#` te gebruiken. Alles na de `#` op dezelfde regel wordt genegeerd door de parser.
+*   **Commentaar:** Je kunt commentaar toevoegen aan je code door een `#` te gebruiken. Alles na de `#` op dezelfde regel wordt genegeerd door de parser. Let wel op dat je dit op een nieuwe regel moet doen. Als je hem gebruikt na de content van een tag maakt het deel van de content zelf.
 *   **Regelafbrekingen:** Extra lege regels (enters) tussen elementen worden genegeerd en kunnen gebruikt worden om je code overzichtelijker te maken.
 
 **Voorbeeld:**
@@ -63,7 +63,8 @@ document;
     metadata name="viewport" content="width=device-width, initial-scale=1.0";
     metadata title="Mijn Webpagina";
   body;
-    kop1 id=hoofdtitel kleur=rood; Welkom bij WebDesignTaal! # Dit is een commentaar
+    kop1 id=hoofdtitel kleur=rood; Welkom bij WebDesignTaal! 
+    # Dit is commentaar
 
     tekst klasse="intro"; Dit is een voorbeeld van een paragraaf.
     link adres="https://www.example.com"; Ga naar Example.com
@@ -96,7 +97,7 @@ WebDesignTaal biedt een flexibele manier om attributen en stijlen toe te passen 
 ### Standaard Attributen
 
 WebDesignTaal herkent en verwerkt de meeste standaard HTML-attributen direct. Je kunt deze gebruiken zoals je gewend bent in HTML:
-`id`, `class`, `href`, `src`, `alt`, `title`, `name`, `value`, `type`, `placeholder`, `checked`, `disabled`, `readonly`, `action`, `method`, `for`, `rel`, `target`, `width`, `height`, `cols`, `rows`, `maxlength`, `min`, `max`, `step`, `selected`, `autocomplete`, `download`, `role`, `lang`, `tabindex`, `aria-label`
+`id`, `class`, `href`, `src`, `alt`, `title`, `name`, `value`, `type`, `placeholder`, `checked`, `disabled`, `readonly`, `action`, `method`, `for`, `rel`, `target`, `width`, `height`, `cols`, `rows`, `maxlength`, `min`, `max`, `step`, `selected`, `autocomplete`, `download`, `role`, `lang`, `tabindex`, `aria-label`, `style`
 
 ### Nederlandse Attribuut Aliassen
 
@@ -640,3 +641,38 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
       <td>Inhoud van de cel</td>
     </tr>
     ```
+
+### `stijl`
+
+* **Doel:** Linkt een extern CSS-stylesheet naar de website.
+* **Vereisten:** Vereist een `adres`-attribuut dat verwijst naar het CSS-bestand.
+* **WDT Voorbeeld:**
+
+  ```wdt
+  stijl href=stijl.css
+  ```
+* **HTML Output:**
+
+  ```html
+  <link rel="stylesheet" type="text/css" href="stijl.css">
+  ```
+
+### `code`
+
+* **Doel:** Voegt een extern of inline JavaScript-script toe aan de website.
+* **Vereisten:** Vereist een `bron`-attribuut voor externe scripts, of inline code na een `;`.
+* **WDT Voorbeeld:**
+
+  ```wdt
+  code src=script.js
+  ```
+
+* **HTML Output:**
+  **Extern script:**
+
+  ```html
+  <script src="script.js"></script>
+  ```
+
+
+  
