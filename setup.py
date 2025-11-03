@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 def read_version():
     version_file = os.path.join(os.path.dirname(__file__), 'WebDesignTaal', 'version.txt')
-    with open(version_file, 'r') as f:
+    with open(version_file, 'r', encoding="utf-8") as f:
         return f.read().strip()
 
 def read_long_description():

@@ -6,6 +6,7 @@ De file handler module werkt samen met de parser om een .wdt bestand om te kunne
 
 # file_handler.py
 import os
+import sys
 from . import wdt_parser  # gebruik relatief importeren als module
 
 def render_code(code: str) -> str:
@@ -42,12 +43,12 @@ def file_conversion(wdt_file: str, output_dir: str = None):
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(html)
 
-    print(f"Code gegenereerd in {output_file}. Gebruik je een style of code tag? Vergeet dan niet om je .css en/of .js bestanden in dezelfde map te slepen.")
+    print(f"Code gegenereerd in {output_file}. Gebruik je een style of code tag? \
+Vergeet dan niet om je .css en/of .js bestanden in dezelfde map te slepen.")
     return output_file
 
 def main():
     """Entry point voor de command-line tool."""
-    import sys
     if len(sys.argv) < 3:
         print("Gebruik: wdt <pad_naar_wdt_bestand> <naam_van_output_map>")
         sys.exit(1)

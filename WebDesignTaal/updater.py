@@ -1,3 +1,10 @@
+"""updater.py
+
+De updater.py is voor manuele updates doen via github.
+
+
+"""
+
 import os
 import sys
 import urllib.request
@@ -14,12 +21,14 @@ UPDATE_DIR = os.path.join(MODULE_DIR, "update_temp")
 ZIP_FILE = os.path.join(MODULE_DIR, "update.zip")
 
 def get_local_version():
+    "Open local version file and return its contents."
     if os.path.exists(LOCAL_VERSION_FILE):
-        with open(LOCAL_VERSION_FILE, "r") as f:
+        with open(LOCAL_VERSION_FILE, "r", encoding="utf-8") as f:
             return f.read().strip()
     return "0.0.0"
 
 def get_remote_version():
+    "Open remote version file and return its contents."
     try:
         with urllib.request.urlopen(GITHUB_VERSION_URL) as response:
             return response.read().decode().strip()
@@ -28,6 +37,7 @@ def get_remote_version():
         return None
 
 def needs_update():
+    "Check if the local version is different from the remote version."
     remote = get_remote_version()
     local = get_local_version()
     if remote is None:
@@ -35,12 +45,14 @@ def needs_update():
     return local != remote
 
 def download_and_extract():
+    "Download new version and extract it."
     print("Downloaden van nieuwe versie...")
     urllib.request.urlretrieve(GITHUB_ZIP_URL, ZIP_FILE)
     with zipfile.ZipFile(ZIP_FILE, 'r') as zip_ref:
         zip_ref.extractall(UPDATE_DIR)
 
 def apply_update():
+    "Update all current files"
     extracted_root = os.path.join(UPDATE_DIR, os.listdir(UPDATE_DIR)[0])
     for item in os.listdir(extracted_root):
         s = os.path.join(extracted_root, item)
@@ -53,12 +65,14 @@ def apply_update():
             shutil.copy2(s, d)
 
 def clean_up():
+    "Clean up after update."
     if os.path.exists(UPDATE_DIR):
         shutil.rmtree(UPDATE_DIR)
     if os.path.exists(ZIP_FILE):
         os.remove(ZIP_FILE)
 
 def update_from_github():
+    "Update process"
     download_and_extract()
     apply_update()
     clean_up()
@@ -66,7 +80,7 @@ def update_from_github():
     sys.exit(0)  # stop zodat volgende run met de nieuwe updater gebeurt
 
 def auto_update():
-    """Kan door andere scripts aangeroepen worden."""
+    """Can be caled by other scripts to check for updates and update if needed."""
     if needs_update():
         print(f"Nieuwe versie beschikbaar! ({get_local_version()} -> {get_remote_version()})")
         update_from_github()

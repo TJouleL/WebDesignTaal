@@ -2,8 +2,6 @@
 In this file you will find the code that parses all the text and creates a tree of nodes.
 When finished creating the tree it will render the root node. which in turn will 
 render all the children. After this it returns the HTML code.
-
-
 """
 from typing import List, Tuple, Dict
 
@@ -39,7 +37,7 @@ def split_first_unquoted(s: str, sep: str = ';') -> Tuple[str, str]:
                 left = s[:i]
                 right = s[i+1:]
                 return left, right
-    
+
     raise ValueError("Geen scheiding gevonden. Ben je ; vergeten?")  # no separator found
 
 def tokenize_attrs(attr_str: str) -> List[str]:
@@ -104,12 +102,14 @@ def parse_attrs_from_left(left: str) -> Dict[str,str]:
     return attrs
 
 def detect_indent_style(lines: List[str]) -> str:
+    "Detects if indentation is spaces or tabs"
     for l in lines:
         if l.startswith("\t"):
             return "tabs"
     return "spaces"
 
 def get_depth(line: str, indent_style: str) -> int:
+    "Get depth amount in tabs or spaces"
     if indent_style == "tabs":
         count = 0
         for ch in line:
@@ -138,6 +138,7 @@ def parse_lines_to_tree(lines: List[str]) -> Tuple[nodes.BaseNode, List[str]]:
 
     root = nodes.create_node("document")
     stack: List[nodes.BaseNode] = [root]  # stack[depth] = node at that depth
+    del root # Cleanup root node
 
     for lineno, raw in enumerate(lines, start=1):
         # ignore blanks and comments (#)
@@ -187,7 +188,7 @@ def parse_lines_to_tree(lines: List[str]) -> Tuple[nodes.BaseNode, List[str]]:
             try:
                 node.update_tags()
             except Exception:
-                pass
+                errors.append(f"Line {lineno}: Error bij het updaten van de tags voor de node '{nodetype}'")
         except KeyError:
             errors.append(f"Line {lineno}: onbekend tag type '{nodetype}'")
             continue
@@ -199,7 +200,7 @@ def parse_lines_to_tree(lines: List[str]) -> Tuple[nodes.BaseNode, List[str]]:
         stack = stack[: depth + 1 ]
         stack.append(node)
 
-    return root, errors
+    return stack[0], errors
 
 
 def render_code(code: str) -> str:
