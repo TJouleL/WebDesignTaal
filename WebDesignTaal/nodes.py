@@ -201,7 +201,7 @@ class BaseNode:
             if k in HTML_ATTRIBUTE_KEYS:
                 html_attrs[k] = v
             # Zo niet check of hij een nederlandse vertaling is van een html attribute.
-            elif k in DUTCH_TRANSLATIONS.keys():
+            elif k in DUTCH_TRANSLATIONS:
                 html_attrs[DUTCH_TRANSLATIONS[k]] = v
             else:
                 # fallback: als key of value niet vertaald is, gebruik originele
@@ -257,7 +257,7 @@ class BaseNode:
 
 
 # Het was mogelijk om deze nodes niet apart te maken en de BaseNode te gebruiken maar ik heb expres
-# ervoor gekozen om aparte classes ervoor te maken zodat er in de toekomst nog makkelijker verder 
+# ervoor gekozen om aparte classes ervoor te maken zodat er in de toekomst nog makkelijker verder
 # op gebouwd kan worden zonder al te veel werk.
 
 
@@ -352,7 +352,7 @@ class ListItemNode(BaseNode):
         self.tag_name = "li"
         # Check if parent is ListNode or NumberedListNode
         if not (self.parent and isinstance(self.parent, (ListNode, NumberedListNode))):
-           raise ValueError("Een lijst item moet onderdeel zijn van een lijst soort.")
+            raise ValueError("Een lijst item moet onderdeel zijn van een lijst soort.")
         self.update_tags()
 
 @register_node("afbeelding")

@@ -16,10 +16,11 @@ pip install WebDesignTaal
 Je kunt een `.wdt` bestand converteren naar een HTML-website met het `wdt` commando:
 
 ```bash
-wdt <pad_naar_bestand.wdt>
+wdt <pad_naar_wdt_bestand> <naam_van_output_map>
 ```
 
 Dit genereert een `output` map (in dezelfde directory als het `.wdt` bestand) met daarin een `index.html` bestand.
+Als je in de wdt code een `stijl` of `code` tag gebruikt **moet** je deze ook in de map met de `index.html` zetten om ervoor te zorgen dat alles goed samenwerkt.
 
 ### Als Python Module
 
