@@ -207,6 +207,5 @@ def render_code(code: str) -> str:
     """Neemt de ruwe code (string met \\n) en rendert het volledige HTML-resultaat."""
     root, errors = parse_lines_to_tree(code.splitlines())   # gebruik jouw bestaande parser
     if errors:
-        print("Error: ")
-        return "\n".join(errors)
+        raise ValueError("\n".join(errors))
     return f"<!DOCTYPE html>\n<!-- WebDesignTaal (v{get_local_version()}) -->\n" + root.render()      # render alle nodes tot HTML
