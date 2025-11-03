@@ -5,84 +5,73 @@ De updater.py is voor manuele updates doen via github.
 
 """
 
-import os
 import sys
 import urllib.request
-import zipfile
-import shutil
+import subprocess
+import socket
+from importlib.metadata import version, PackageNotFoundError
 
-# Path van de module zelf
-MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
+GITHUB_VERSION_URL = "https://raw.githubusercontent.com/TJouleL/WebDesignTaal/refs/heads/main/WebDesignTaal/version.txt"
 
-GITHUB_VERSION_URL = "https://raw.githubusercontent.com/TJouleL/WebDesignTaal/main/version.txt"
-LOCAL_VERSION_FILE = os.path.join(MODULE_DIR, "version.txt")
-GITHUB_ZIP_URL = "https://github.com/TJouleL/WebDesignTaal/archive/refs/heads/main.zip"
-UPDATE_DIR = os.path.join(MODULE_DIR, "update_temp")
-ZIP_FILE = os.path.join(MODULE_DIR, "update.zip")
+
+def is_online(host="google.com", port=443, timeout=3):
+    "Check of het huidige device internet connectie heeft"
+    try:
+        socket.create_connection((host, port), timeout=timeout)
+        return True
+    except OSError:
+        return False
+
 
 def get_local_version():
-    "Open local version file and return its contents."
-    if os.path.exists(LOCAL_VERSION_FILE):
-        with open(LOCAL_VERSION_FILE, "r", encoding="utf-8") as f:
-            return f.read().strip()
-    return "0.0.0"
+    "Check local version and return its contents."
+    try:
+        return version("WebDesignTaal")
+    except PackageNotFoundError:
+        print("WebDesignTaal package kon niet gevonden worden. Is hij wel geïnstalleerd?")
+        return "0.0.0"
+    except Exception as e:
+        print(f"Kon lokale version niet ophalen: {e}")
+        return "0.0.0"
 
 def get_remote_version():
     "Open remote version file and return its contents."
     try:
         with urllib.request.urlopen(GITHUB_VERSION_URL) as response:
-            return response.read().decode().strip()
+            return str(response.read().decode().strip())
     except Exception as e:
         print(f"Kon remote version niet ophalen: {e}")
         return None
 
 def needs_update():
     "Check if the local version is different from the remote version."
-    remote = get_remote_version()
-    local = get_local_version()
-    if remote is None:
-        return False
-    return local != remote
+    remote = tuple(map(int, get_remote_version().split(".")))
+    local = tuple(map(int, get_local_version().split(".")))
 
-def download_and_extract():
-    "Download new version and extract it."
-    print("Downloaden van nieuwe versie...")
-    urllib.request.urlretrieve(GITHUB_ZIP_URL, ZIP_FILE)
-    with zipfile.ZipFile(ZIP_FILE, 'r') as zip_ref:
-        zip_ref.extractall(UPDATE_DIR)
+    if remote > local:
+        return True
+    return False
 
-def apply_update():
-    "Update all current files"
-    extracted_root = os.path.join(UPDATE_DIR, os.listdir(UPDATE_DIR)[0])
-    for item in os.listdir(extracted_root):
-        s = os.path.join(extracted_root, item)
-        d = os.path.join(MODULE_DIR, item)
-        if os.path.isdir(s):
-            if os.path.exists(d):
-                shutil.rmtree(d)
-            shutil.copytree(s, d)
-        else:
-            shutil.copy2(s, d)
+def upgrade_package():
+    "Safely upgrades the WebDesignTaal package"
 
-def clean_up():
-    "Clean up after update."
-    if os.path.exists(UPDATE_DIR):
-        shutil.rmtree(UPDATE_DIR)
-    if os.path.exists(ZIP_FILE):
-        os.remove(ZIP_FILE)
-
-def update_from_github():
-    "Update process"
-    download_and_extract()
-    apply_update()
-    clean_up()
-    print("Update voltooid! Start het script opnieuw.")
-    sys.exit(0)  # stop zodat volgende run met de nieuwe updater gebeurt
+    # Both are done to prevent broken updates when WebDesignTaal is uninstalled via pip
+    cmd1 = [sys.executable, "-m", "pip", "install", "WebDesignTaal"]
+    cmd2 = [sys.executable, "-m", "pip", "install", "--upgrade", "WebDesignTaal"]
+    try:
+        subprocess.check_call(cmd1)
+        subprocess.check_call(cmd2)
+        print("Upgrade succesvol!")
+    except subprocess.CalledProcessError:
+        print("Upgrade failed.")
 
 def auto_update():
     """Can be caled by other scripts to check for updates and update if needed."""
-    if needs_update():
-        print(f"Nieuwe versie beschikbaar! ({get_local_version()} -> {get_remote_version()})")
-        update_from_github()
-    else:
-        print(f"Script is up-to-date. Versie: {get_local_version()}")
+    if is_online():
+        if needs_update():
+            print(f"Nieuwe versie beschikbaar! ({get_local_version()} -> {get_remote_version()})")
+            antwoord = input("Wil je updaten? (Y/n) : ")
+            if antwoord.lower() == "y" or antwoord.lower() == "":
+                upgrade_package()
+            else:
+                pass

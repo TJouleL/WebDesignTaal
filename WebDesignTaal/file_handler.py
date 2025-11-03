@@ -8,6 +8,7 @@ De file handler module werkt samen met de parser om een .wdt bestand om te kunne
 import os
 import sys
 from . import wdt_parser  # gebruik relatief importeren als module
+from .updater import auto_update, get_local_version
 
 def render_code(code: str) -> str:
     """Render de WDT code naar HTML via de parser module."""
@@ -49,13 +50,26 @@ Vergeet dan niet om je .css en/of .js bestanden in dezelfde map te slepen.")
 
 def main():
     """Entry point voor de command-line tool."""
-    if len(sys.argv) < 3:
+    auto_update()
+
+    # Check for updates
+    if sys.argv[1] == "-u" or sys.argv[1] == "--update":
+        auto_update()
+        sys.exit(0)
+
+    if sys.argv[1] == "-v" or sys.argv[1] == "--version":
+        print(get_local_version())
+        print("Gebruik wdt --update om te checken voor nieuwe updates en ze te installeren")
+        sys.exit(0)
+
+    if len(sys.argv) < 3 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
         print("Gebruik: wdt <pad_naar_wdt_bestand> <naam_van_output_map>")
         sys.exit(1)
 
     wdt_path = sys.argv[1]
     output_map = sys.argv[2]
     file_conversion(wdt_path, output_map)
+    sys.exit(0)
 
 # Alleen uitvoeren als standalone script
 if __name__ == "__main__":
