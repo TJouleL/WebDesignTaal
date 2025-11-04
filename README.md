@@ -56,7 +56,7 @@ WebDesignTaal gebruikt een eenvoudige, op indentatie gebaseerde syntax om de str
 
 *   **Indentatie:** De hiërarchie van elementen wordt bepaald door indentatie. Gebruik **vier spaties** per niveau.
 *   **Tag Naam:** Elk element begint met de Nederlandse tag naam (bijv. `document`, `kop1`, `tekst`).
-*   **Content:** De tekstuele inhoud van een element volgt na een puntkomma (`;`). Als er geen content is, kan de puntkomma weggelaten worden, maar het is goede praktijk om deze te behouden voor consistentie.
+*   **Content:** De tekstuele inhoud van een element volgt na een puntkomma (`;`).
 *   **Attributen:** Attributen worden na de tag naam geplaatst en voor de puntkomma, gescheiden door spaties. Attributen bestaan uit een sleutel-waarde paar (`sleutel=waarde`). Waarden die spaties bevatten, moeten tussen aanhalingstekens (`"` of `'`) staan. Voor waarden zonder spaties zijn aanhalingstekens optioneel.
 *   **Commentaar:** Je kunt commentaar toevoegen aan je code door een `#` te gebruiken. Alles na de `#` op dezelfde regel wordt genegeerd door de parser. Let wel op dat je dit op een nieuwe regel moet doen. Als je hem gebruikt na de content van een tag maakt het deel van de content zelf.
 *   **Regelafbrekingen:** Extra lege regels (enters) tussen elementen worden genegeerd en kunnen gebruikt worden om je code overzichtelijker te maken.
@@ -99,7 +99,7 @@ document;  # Parent
 
 ## Attributen en Stijlvertalingen
 
-WebDesignTaal biedt een flexibele manier om attributen en stijlen toe te passen op je elementen. Je kunt de meeste standaard HTML-attributen direct gebruiken, evenals Nederlandse vertalingen voor veelvoorkomende attributen en CSS-stijlen.
+WebDesignTaal biedt een flexibele manier om attributen en stijlen toe te passen op je elementen. Je kunt de meeste standaard HTML-attributen direct gebruiken, evenals Nederlandse vertalingen voor veelvoorkomende attributen en CSS-stijlen. Met de stijl en code tag kan je ook je eigen javascript of css volledig integreren in je code. Als je meer hierover wil weten kan je door scrollen naar de tags en stijl/code opzoeken.
 
 ### Standaard Attributen
 
