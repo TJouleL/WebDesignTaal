@@ -22,6 +22,12 @@ wdt <pad_naar_wdt_bestand> <naam_van_output_map>
 Dit genereert een `output` map (in dezelfde directory als het `.wdt` bestand) met daarin een `index.html` bestand.
 Als je in de wdt code een `stijl` of `code` tag gebruikt **moet** je deze ook in de map met de `index.html` zetten om ervoor te zorgen dat alles goed samenwerkt.
 
+### Visual Studio Code Extensie
+
+Voor een betere ontwikkelervaring is er een Visual Studio Code-extensie beschikbaar die syntax-highlighting toevoegt voor `.wdt` bestanden. Het wordt aangeraden om deze te installeren.
+
+De extensie is niet beschikbaar op de Visual Studio Code Marketplace, maar kan worden gedownload van GitHub. Ga naar [WebDesignTaal-Extension](https://github.com/TJouleL/WebDesignTaal-Extension) om het `.vsix` bestand te downloaden. De installatie-instructies zijn ook op die pagina te vinden.
+
 ### Als Python Module
 
 Je kunt de `render_code` functie ook direct in je Python-code gebruiken:
