@@ -58,4 +58,4 @@ def update():
     if is_online():
         if needs_update():
             print(f"Nieuwe versie beschikbaar! ({get_local_version(silent=True)} -> {get_remote_version(silent=True)})")
-            print("Om te updaten type in de terminal : \n\npython -m pip install --upgrade WebDesignTaal")
+            print("Om te updaten type in de terminal : \n\npython -m pip install WebDesignTaal --upgrade")
