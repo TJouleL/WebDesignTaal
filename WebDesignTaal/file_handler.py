@@ -14,6 +14,20 @@ def render_code(code: str) -> str:
     """Render de WDT code naar HTML via de parser module."""
     return wdt_parser.render_code(code)
 
+def find_free_filename(output_dir, base="index", ext="html"):
+    """Een functie die een bestandsnaam zoekt die nog niet in gebruik is genomen"""
+    n = 0
+    while True:
+        if n == 0:
+            filename = f"{base}.{ext}"
+        else:
+            filename = f"{base}{n}.{ext}"
+
+        if not os.path.exists(os.path.join(output_dir, filename)):
+            return filename
+
+        n += 1
+
 def file_conversion(wdt_file: str, output_dir: str = None):
     """
     Converteer een .wdt bestand naar een volledige website folder met index.html.
@@ -39,12 +53,12 @@ def file_conversion(wdt_file: str, output_dir: str = None):
     except ValueError as e:
         print(e)
         sys.exit(1)
- 
+
     # 3. maak output folder als die niet bestaat
     os.makedirs(output_dir, exist_ok=True)
 
     # 4. schrijf index.html
-    output_file = os.path.join(output_dir, "index.html")
+    output_file = os.path.join(output_dir, find_free_filename(output_dir))
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(html)
 
