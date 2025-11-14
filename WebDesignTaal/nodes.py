@@ -11,7 +11,8 @@ HTML_ATTRIBUTE_KEYS = [
     "type", "placeholder", "checked", "disabled", "readonly", "style",
     "action", "method", "for", "rel", "target", "width", "height", 
     "cols", "rows", "maxlength", "min", "max", "step", "selected",
-    "autocomplete", "download", "role", "lang", "tabindex", "aria-label"
+    "autocomplete", "download", "role", "lang", "tabindex", "aria-label",
+    "charset", "class"
 ]
 
 DUTCH_TRANSLATIONS = {
@@ -25,7 +26,8 @@ DUTCH_TRANSLATIONS = {
     "alttekst": "alt",
     "karakterset": "charset",
     "citeer": "cite",
-    "verborgen": "hidden"
+    "verborgen": "hidden",
+    "klasse": "class"
 }
 
 STYLE_PROPERTY_MAP = {
