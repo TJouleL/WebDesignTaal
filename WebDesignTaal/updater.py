@@ -4,10 +4,7 @@ De updater.py is voor manuele updates doen via github.
 
 
 """
-
-import sys
 import urllib.request
-import subprocess
 import socket
 from importlib.metadata import version, PackageNotFoundError
 
@@ -55,26 +52,10 @@ def needs_update():
         return True
     return False
 
-def upgrade_package():
-    "Safely upgrades the WebDesignTaal package"
 
-    # Both are done to prevent broken updates when WebDesignTaal is uninstalled via pip
-    cmd1 = [sys.executable, "-m", "pip", "install", "WebDesignTaal"]
-    cmd2 = [sys.executable, "-m", "pip", "install", "--upgrade", "WebDesignTaal"]
-    try:
-        subprocess.check_call(cmd1)
-        subprocess.check_call(cmd2)
-        print("Upgrade succesvol!")
-    except subprocess.CalledProcessError:
-        print("Upgrade failed.")
-
-def auto_update():
+def update():
     """Can be caled by other scripts to check for updates and update if needed."""
     if is_online():
         if needs_update():
             print(f"Nieuwe versie beschikbaar! ({get_local_version(silent=True)} -> {get_remote_version(silent=True)})")
-            antwoord = input("Wil je updaten? (Y/n) : ")
-            if antwoord.lower() == "y" or antwoord.lower() == "":
-                upgrade_package()
-            else:
-                pass
+            print("Om te updaten type in de terminal : \n\npython -m pip install --upgrade WebDesignTaal")
