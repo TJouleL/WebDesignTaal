@@ -128,6 +128,50 @@ def get_depth(line: str, indent_style: str) -> int:
                 break
         return count // SPACE_INDENT_SIZE
 
+
+def parse_line(lineno: str, raw: str, indent_style: str) -> Tuple:
+    """A function used to parse a specific line of WDT"""
+    errors: List[str] = []
+    # ignore blanks and comments (#)
+    if not raw.strip() or raw.lstrip().startswith("#"):
+        return
+
+    depth = get_depth(raw, indent_style)
+    # remove leading indent characters
+    if indent_style == "tabs":
+        trimmed = raw.lstrip('\t').rstrip("\n").rstrip("\r")
+    else:
+        trimmed = raw.lstrip(' ').rstrip("\n").rstrip("\r")
+        
+
+    # split on first unquoted semicolon
+    left, content = split_first_unquoted(trimmed, ';')
+    left = left.strip()
+    content = content.lstrip()
+
+    if not left:
+        errors.append(f"(Foutmelding) Line {lineno}: mist een node type / linker kant")
+        return
+
+    # nodetype is the first token of left
+    parts = left.split(None, 1)
+    nodetype = parts[0]
+    attr_segment = parts[1] if len(parts) > 1 else ""
+
+    # parse attrs from attr_segment
+    attrs = {}
+    if attr_segment:
+        try:
+            attrs = parse_attrs_from_left(attr_segment)
+        except Exception as e:
+            errors.append(f"(Foutmelding) Line {lineno}: attribute parse error: {e}")
+            return
+
+    return nodetype, content, attrs, depth, errors
+
+
+
+
 def parse_lines_to_tree(lines: List[str]) -> Tuple[nodes.BaseNode, List[str]]:
     """
     Parse lines with semicolon syntax into a node tree using nodes.create_node.
@@ -136,47 +180,33 @@ def parse_lines_to_tree(lines: List[str]) -> Tuple[nodes.BaseNode, List[str]]:
     errors: List[str] = []
     indent_style = detect_indent_style(lines)
 
-    root = nodes.create_node("document")
+    # parse first Node, if node isn't a document throw error
+    rootnode = parse_line(0, lines[0], indent_style)
+    if rootnode[0] != "document": # if type != document
+        errors.append("(Foutmelding) Line 1: Het script heeft geen document tag. Dit is vereist.")
+        return None, errors
+
+    root = nodes.create_node(rootnode[0], content=rootnode[1], attrs=rootnode[2])
+    root.update_tags()
+
     stack: List[nodes.BaseNode] = [root]  # stack[depth] = node at that depth
     del root # Cleanup root node
 
     for lineno, raw in enumerate(lines, start=1):
-        # ignore blanks and comments (#)
-        if not raw.strip() or raw.lstrip().startswith("#"):
+        # skip the first line document node since its added to the stack or threw an error
+        if lineno == 1:
             continue
 
-        depth = get_depth(raw, indent_style)
-        # remove leading indent characters
-        if indent_style == "tabs":
-            trimmed = raw.lstrip('\t').rstrip("\n").rstrip("\r")
-        else:
-            trimmed = raw.lstrip(' ').rstrip("\n").rstrip("\r")
-
-        # split on first unquoted semicolon
-        left, content = split_first_unquoted(trimmed, ';')
-        left = left.strip()
-        content = content.lstrip()
-
-        if not left:
-            errors.append(f"Line {lineno}: mist een node type / linker kant")
+        # parse line
+        nodetype, content, attrs, depth, returned_errors = parse_line(lineno, raw, indent_style)
+        if returned_errors:
+            errors.extend(returned_errors)
             continue
 
-        # nodetype is the first token of left
-        parts = left.split(None, 1)
-        nodetype = parts[0]
-        attr_segment = parts[1] if len(parts) > 1 else ""
-
-        # parse attrs from attr_segment
-        attrs = {}
-        if attr_segment:
-            try:
-                attrs = parse_attrs_from_left(attr_segment)
-            except Exception as e:
-                errors.append(f"Line {lineno}: attribute parse error: {e}")
 
         # determine parent
         if depth > len(stack) - 1:
-            errors.append(f"Line {lineno}: foute indentatie (diepte {depth}), Node word child van meest recente parent node")
+            print(f"(Waarschuwing) Line {lineno}: foute indentatie (diepte {depth}), Node word child van meest recente parent node")
             parent = stack[-1]
         else:
             parent = stack[depth]
@@ -188,12 +218,12 @@ def parse_lines_to_tree(lines: List[str]) -> Tuple[nodes.BaseNode, List[str]]:
             try:
                 node.update_tags()
             except Exception:
-                errors.append(f"Line {lineno}: Error bij het updaten van de tags voor de node '{nodetype}'")
+                errors.append(f"(Foutmelding) Line {lineno}: Error bij het updaten van de tags voor de node '{nodetype}'")
         except KeyError:
-            errors.append(f"Line {lineno}: onbekend tag type '{nodetype}'")
+            errors.append(f"(Foutmelding) Line {lineno}: onbekend tag type '{nodetype}'")
             continue
         except Exception as e:
-            errors.append(f"Line {lineno}: error bij het aanmaken van een node '{nodetype}': {e}")
+            errors.append(f"(Foutmelding) Line {lineno}: error bij het aanmaken van een node '{nodetype}': {e}")
             continue
 
         # update stack
@@ -208,4 +238,4 @@ def render_code(code: str) -> str:
     root, errors = parse_lines_to_tree(code.splitlines())   # gebruik jouw bestaande parser
     if errors:
         raise ValueError("\n".join(errors))
-    return f"<!DOCTYPE html>\n<!-- WebDesignTaal (v{get_local_version()}) -->\n" + root.render()      # render alle nodes tot HTML
+    return f"<!DOCTYPE html>\n<!-- WebDesignTaal (v{get_local_version()}) -->\n" + root.render() # render alle nodes tot HTML

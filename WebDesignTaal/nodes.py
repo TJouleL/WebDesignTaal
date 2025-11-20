@@ -12,7 +12,7 @@ HTML_ATTRIBUTE_KEYS = [
     "action", "method", "for", "rel", "target", "width", "height", 
     "cols", "rows", "maxlength", "min", "max", "step", "selected",
     "autocomplete", "download", "role", "lang", "tabindex", "aria-label",
-    "charset", "class"
+    "charset", "class", "content"
 ]
 
 DUTCH_TRANSLATIONS = {
@@ -27,7 +27,8 @@ DUTCH_TRANSLATIONS = {
     "karakterset": "charset",
     "citeer": "cite",
     "verborgen": "hidden",
-    "klasse": "class"
+    "klasse": "class",
+    "inhoud": "content"
 }
 
 STYLE_PROPERTY_MAP = {
@@ -268,6 +269,9 @@ class DocumentNode(BaseNode):
     def __init__(self, content = None, attrs = None, parent = None):
         super().__init__(content, attrs, parent)
         self.tag_name = "html"
+        # if language not defined set default to nl
+        if not self.attrs:
+            self.attrs["lang"] = "nl"
         self.update_tags()
 
 @register_node("head")
@@ -283,6 +287,14 @@ class BodyNode(BaseNode):
         super().__init__(content, attrs, parent)
         self.tag_name = "body"
         self.update_tags()
+
+@register_node("titel")
+class TitleTagNode(BaseNode):
+    def __init__(self, content = None, attrs = None, parent = None):
+        super().__init__(content, attrs, parent)
+        self.tag_name = "title"
+        self.update_tags()
+
 
 @register_node("kop1")
 class TitleNode(BaseNode):
