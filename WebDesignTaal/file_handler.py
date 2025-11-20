@@ -72,8 +72,7 @@ def main():
 
     if len(sys.argv) == 2:
         if sys.argv[1] == "-v" or sys.argv[1] == "--version":
-            print(get_local_version())
-            print("Gebruik wdt --update om te checken voor nieuwe updates en ze te installeren")
+            print("Huidige geïnstalleerde versie : ", get_local_version())
             sys.exit(0)
 
     if len(sys.argv) < 3 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
