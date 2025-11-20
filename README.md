@@ -37,11 +37,11 @@ from WebDesignTaal.wdt_parser import render_code
 
 wdt_code = """
 document;
-  head;
+head;
     metadata charset="utf-8";
-    metadata name="viewport" content="width=device-width, initial-scale=1.0";
-    metadata title="Mijn Webpagina";
-  body;
+    metadata naam="viewport" inhoud="width=device-width, initial-scale=1.0";
+    titel; Titel van mijn Webpagina
+body;
     kop1; Welkom bij WebDesignTaal!
     tekst; Dit is een voorbeeld van een paragraaf.
 """
@@ -54,7 +54,7 @@ print(html_output)
 
 WebDesignTaal gebruikt een eenvoudige, op indentatie gebaseerde syntax om de structuur van webpagina's te definiëren.
 
-*   **Indentatie:** De hiërarchie van elementen wordt bepaald door indentatie. Gebruik **vier spaties** per niveau.
+*   **Indentatie:** De hiërarchie van elementen wordt bepaald door indentatie. Gebruik **vier spaties** of **1 tab** per niveau.
 *   **Tag Naam:** Elk element begint met de Nederlandse tag naam (bijv. `document`, `kop1`, `tekst`).
 *   **Content:** De tekstuele inhoud van een element volgt na een puntkomma (`;`).
 *   **Attributen:** Attributen worden na de tag naam geplaatst en voor de puntkomma, gescheiden door spaties. Attributen bestaan uit een sleutel-waarde paar (`sleutel=waarde`). Waarden die spaties bevatten, moeten tussen aanhalingstekens (`"` of `'`) staan. Voor waarden zonder spaties zijn aanhalingstekens optioneel.
@@ -65,11 +65,11 @@ WebDesignTaal gebruikt een eenvoudige, op indentatie gebaseerde syntax om de str
 
 ```wdt
 document;
-  head;
+head;
     metadata charset="utf-8";
     metadata name="viewport" content="width=device-width, initial-scale=1.0";
-    metadata title="Mijn Webpagina";
-  body;
+    titel; Mijn Webpagina titel
+body;
     kop1 id=hoofdtitel kleur=rood; Welkom bij WebDesignTaal! 
     # Dit is commentaar
 
@@ -86,16 +86,20 @@ WebDesignTaal vertaalt je code naar een interne boomstructuur van 'nodes' (knope
 
 Deze hiërarchische structuur zorgt ervoor dat de gecompileerde HTML correct genest is, wat essentieel is voor de structuur en weergave van webpagina's. Bijvoorbeeld, een `head` node is een kind van de `document` node, en een `tekst` node kan een kind zijn van een `body` node.
 
+
 **Voorbeeld van hiërarchie:**
 
 ```wdt
 document;  # Parent
-  head;    # Kind van 'document'
+head;    # Kind van 'document'
     metadata; # Kind van 'head'
-  body;    # Kind van 'document'
+body;    # Kind van 'document'
     kop1;    # Kind van 'body'
     tekst;   # Kind van 'body'
 ```
+
+Nu valt er te zien dat de `head` en `body` geen indentatie gebruiken na de `document` node. Dit is iets wat alleen geld voor de `document` node op regel 1 van de code. Je hoeft dus geen tab of spaties te gebruiken na deze specifieke node aangezien alle code dan een extra "indent" zou moeten opschuiven wat onnodig is. Als je wel de `body` en `head` of andere nodes indentatie geeft na de eerste `document` krijg je enorm veel waarschuwingen en zal je slechte code genereren.
+
 
 ## Attributen en Stijlvertalingen
 
@@ -123,6 +127,8 @@ Voor een meer Nederlandse ervaring kun je de volgende aliassen gebruiken voor ve
 | `karakterset` | `charset`       |
 | `citeer`      | `cite`          |
 | `verborgen`   | `hidden`        |
+| `klasse`      | `class`         |
+| `inhoud`      | `content`       |
 
 ### Stijl Attributen
 
@@ -242,19 +248,23 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 
 ### `document`
 *   **Doel:** De root van elk WebDesignTaal document, definieert de basisstructuur van je webpagina.
-*   **Vereisten:** Geen specifieke attributen. Bevat meestal `head` en `body` als kinderen.
+*   **Vereisten:** Geen specifieke attributen. Hier is het wel handig als je een engelse site wil maken dat je de `taal`attribuut aanpast. Ook is het belangrijk om te weten dat alles wat na de `document` tag komt geen indentatie mag hebben (spaties en tabs). Dit geld alleen voor de `document` tag op de eerste regel van het bestand.
 *   **WDT Voorbeeld:**
     ```wdt
     document;
-      head;
-      body;
+    head;
+        titel; Titel
+    body;
+        kop1; Hallo
     ```
 *   **HTML Output:**
     ```html
-    <html>
+    <html lang="nl">
       <head>
+        <title>Titel</title>
       </head>
       <body>
+        <h1>Hallo</h1>
       </body>
     </html>
     ```
@@ -265,16 +275,16 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     document;
-      head;
+    head;
         metadata charset="utf-8";
-        metadata title="Mijn Titel";
+        titel; Mijn Titel
     ```
 *   **HTML Output:**
     ```html
     <html>
       <head>
         <meta charset="utf-8">
-        <meta title="Mijn Titel">
+        <title>Mijn Titel</title>
       </head>
       <body>
       </body>
@@ -287,16 +297,18 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     document;
-      body;
+    body;
         kop1; Welkom!
         tekst; Dit is de inhoud.
     ```
 *   **HTML Output:**
     ```html
-    <body>
-      <h1>Welkom!</h1>
-      <h2>Dit is de inhoud.</h2>
-    </body>
+    <html lang="nl">
+      <body>
+        <h1>Welkom!</h1>
+        <h2>Dit is de inhoud.</h2>
+      </body>
+    </html>
     ```
 
 ### `kop1` tot `kop6`
@@ -305,9 +317,9 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      kop1; Hoofdtitel
-      kop2; Subtitel
-      kop6; Kleinste kop
+        kop1; Hoofdtitel
+        kop2; Subtitel
+        kop6; Kleinste kop
     ```
 *   **HTML Output:**
     ```html
@@ -324,8 +336,8 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      tekst; Dit is een normale paragraaf.
-      tekst kleur=blauw; Deze tekst is blauw.
+        tekst; Dit is een normale paragraaf.
+        tekst kleur=blauw; Deze tekst is blauw.
     ```
 *   **HTML Output:**
     ```html
@@ -341,9 +353,9 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      opsomming_lijst;
-        lijst_item; Eerste item
-        lijst_item; Tweede item
+        opsomming_lijst;
+            lijst_item; Eerste item
+            lijst_item; Tweede item
     ```
 *   **HTML Output:**
     ```html
@@ -361,9 +373,9 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      getal_lijst;
-        lijst_item; Eerste genummerde item
-        lijst_item; Tweede genummerde item
+        getal_lijst;
+            lijst_item; Eerste genummerde item
+            lijst_item; Tweede genummerde item
     ```
 *   **HTML Output:**
     ```html
@@ -381,7 +393,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:** (Zie `opsomming_lijst` en `getal_lijst` voor context)
     ```wdt
     opsomming_lijst;
-      lijst_item; Een item
+        lijst_item; Een item
     ```
 *   **HTML Output:**
     ```html
@@ -396,7 +408,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      afbeelding bron="pad/naar/afbeelding.jpg" alttekst="Beschrijving van afbeelding";
+        afbeelding bron="pad/naar/afbeelding.jpg" alttekst="Beschrijving van afbeelding";
     ```
 *   **HTML Output:**
     ```html
@@ -411,7 +423,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      link adres="https://www.google.com"; Ga naar Google
+        link adres="https://www.google.com"; Ga naar Google
     ```
 *   **HTML Output:**
     ```html
@@ -426,9 +438,9 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      gedeelte id=mijnSectie klasse=container;
-        kop2; Dit is een sectie
-        tekst; Content binnen de sectie.
+        gedeelte id=mijnSectie klasse=container;
+            kop2; Dit is een sectie
+            tekst; Content binnen de sectie.
     ```
 *   **HTML Output:**
     ```html
@@ -446,9 +458,9 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      artikel;
-        kop2; Nieuwsbericht
-        tekst; Dit is de inhoud van het nieuwsbericht.
+        artikel;
+            kop2; Nieuwsbericht
+            tekst; Dit is de inhoud van het nieuwsbericht.
     ```
 *   **HTML Output:**
     ```html
@@ -466,7 +478,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      audio bron="pad/naar/audio.mp3";
+        audio bron="pad/naar/audio.mp3";
     ```
 *   **HTML Output:**
     ```html
@@ -481,7 +493,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      video bron="pad/naar/video.mp4" breedte=640 hoogte=480;
+        video bron="pad/naar/video.mp4" breedte=640 hoogte=480;
     ```
 *   **HTML Output:**
     ```html
@@ -496,7 +508,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      quote; Dit is een lang citaat van een andere bron.
+        quote; Dit is een lang citaat van een andere bron.
     ```
 *   **HTML Output:**
     ```html
@@ -511,9 +523,9 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      tekst; Boven de lijn.
-      lijn;
-      tekst; Onder de lijn.
+        tekst; Boven de lijn.
+        lijn;
+        tekst; Onder de lijn.
     ```
 *   **HTML Output:**
     ```html
@@ -530,7 +542,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      schuingedrukt; Dit is schuingedrukte tekst.
+        schuingedrukt; Dit is schuingedrukte tekst.
     ```
 *   **HTML Output:**
     ```html
@@ -545,7 +557,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      dikgedrukt; Dit is dikgedrukte tekst.
+        dikgedrukt; Dit is dikgedrukte tekst.
     ```
 *   **HTML Output:**
     ```html
@@ -560,7 +572,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      onderlijndrukt; Dit is onderlijnde tekst.
+        onderlijndrukt; Dit is onderlijnde tekst.
     ```
 *   **HTML Output:**
     ```html
@@ -575,8 +587,8 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     head;
-      metadata charset="utf-8";
-      metadata name="description" content="Een beschrijving van de pagina";
+        metadata charset="utf-8";
+        metadata name="description" content="Een beschrijving van de pagina";
     ```
 *   **HTML Output:**
     ```html
@@ -592,13 +604,13 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:**
     ```wdt
     body;
-      tabel;
-        tabelrij;
-          tabelcel; Rij 1, Cel 1
-          tabelcel; Rij 1, Cel 2
-        tabelrij;
-          tabelcel; Rij 2, Cel 1
-          tabelcel; Rij 2, Cel 2
+        tabel;
+            tabelrij;
+                tabelcel; Rij 1, Cel 1
+                tabelcel; Rij 1, Cel 2
+            tabelrij;
+                tabelcel; Rij 2, Cel 1
+                tabelcel; Rij 2, Cel 2
     ```
 *   **HTML Output:**
     ```html
@@ -622,8 +634,8 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:** (Zie `tabel` voor context)
     ```wdt
     tabel;
-      tabelrij;
-        tabelcel; Cel in rij
+        tabelrij;
+            tabelcel; Cel in rij
     ```
 *   **HTML Output:**
     ```html
@@ -640,7 +652,7 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
 *   **WDT Voorbeeld:** (Zie `tabel` voor context)
     ```wdt
     tabelrij;
-      tabelcel; Inhoud van de cel
+        tabelcel; Inhoud van de cel
     ```
 *   **HTML Output:**
     ```html
@@ -675,11 +687,28 @@ Hieronder vind je een overzicht van alle beschikbare tags in WebDesignTaal, incl
   ```
 
 * **HTML Output:**
-  **Extern script:**
 
   ```html
   <script src="script.js"></script>
   ```
+### `titel`
+
+* **Doel** Voegt een titel aan de pagina toe die je bovenaan in de browser ziet.
+* **Vereisten:** Vereist tekstuele inhoud, Ook word er verwacht dat de `titel` tag in de head staat. Niet de body.
+* **WDT Voorbeeld:**
+
+  ```wdt
+  head;
+      titel; Dit is de titel van de site!
+  ```
+* **HTML Output:**
+
+  ```html
+  <head>
+    <title>Dit is de titel van de site!</title>
+  </head>
+  ```
+
 
 
   

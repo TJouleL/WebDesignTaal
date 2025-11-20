@@ -10,9 +10,8 @@ from importlib.metadata import version, PackageNotFoundError
 
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/TJouleL/WebDesignTaal/refs/heads/main/WebDesignTaal/version.txt"
 
-
 def is_online(host="google.com", port=443, timeout=3):
-    "Check of het huidige device internet connectie heeft"
+    "Check if current device has an internet connection"
     try:
         socket.create_connection((host, port), timeout=timeout)
         return True
