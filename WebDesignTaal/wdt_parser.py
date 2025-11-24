@@ -134,7 +134,7 @@ def parse_line(lineno: str, raw: str, indent_style: str) -> Tuple:
     errors: List[str] = []
     # ignore blanks and comments (#)
     if not raw.strip() or raw.lstrip().startswith("#"):
-        return
+        return ""
 
     depth = get_depth(raw, indent_style)
     # remove leading indent characters
@@ -142,7 +142,7 @@ def parse_line(lineno: str, raw: str, indent_style: str) -> Tuple:
         trimmed = raw.lstrip('\t').rstrip("\n").rstrip("\r")
     else:
         trimmed = raw.lstrip(' ').rstrip("\n").rstrip("\r")
-        
+
 
     # split on first unquoted semicolon
     left, content = split_first_unquoted(trimmed, ';')
@@ -198,7 +198,14 @@ def parse_lines_to_tree(lines: List[str]) -> Tuple[nodes.BaseNode, List[str]]:
             continue
 
         # parse line
-        nodetype, content, attrs, depth, returned_errors = parse_line(lineno, raw, indent_style)
+        parsed_line = parse_line(lineno, raw, indent_style)
+        if isinstance(parsed_line, str):
+            continue
+
+        # Unpack tuple
+        nodetype, content, attrs, depth, returned_errors = parsed_line
+        del parsed_line
+
         if returned_errors:
             errors.extend(returned_errors)
             continue
