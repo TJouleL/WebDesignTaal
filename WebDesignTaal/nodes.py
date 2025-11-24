@@ -28,7 +28,8 @@ DUTCH_TRANSLATIONS = {
     "citeer": "cite",
     "verborgen": "hidden",
     "klasse": "class",
-    "inhoud": "content"
+    "inhoud": "content",
+    "naam": "name"
 }
 
 STYLE_PROPERTY_MAP = {
